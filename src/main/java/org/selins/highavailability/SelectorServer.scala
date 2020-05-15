@@ -19,11 +19,11 @@ import org.slf4j.LoggerFactory
 class SelectorServer(
   var curator: CuratorFramework,
   listener: LeaderSelector,
-  var path: String) extends NodeCacheListener with UnhandledErrorListener {
+  var endpointId: String) extends NodeCacheListener with UnhandledErrorListener {
 
   this.curator =  Objects.requireNonNull(curator)
-  this.path =  Objects.requireNonNull(path)
-  var cache = new NodeCache(curator, "/leader/" + path)
+  this.endpointId =  Objects.requireNonNull(endpointId)
+  var cache = new NodeCache(curator, "/leader/" + endpointId)
   cache.start()
   cache.rebuild()
   var lastLeaderAddress: String = null
@@ -32,7 +32,7 @@ class SelectorServer(
   notifyLeaderAddress()
 
   val LOG = LogManager.getLogger(classOf[SelectorServer])
-  LOG.info("Starting QuerierServer {}.", path)
+  LOG.info("Starting QuerierServer {}.", endpointId)
 
   override def nodeChanged(): Unit = {
     this.synchronized {
@@ -66,7 +66,7 @@ class SelectorServer(
 
   @throws[Exception]
   def stop(): Unit = {
-    LOG.info("Stopping QuerierServer {}.", path)
+    LOG.info("Stopping QuerierServer {}.", endpointId)
 
     curator.getUnhandledErrorListenable.removeListener(this)
     try cache.close()

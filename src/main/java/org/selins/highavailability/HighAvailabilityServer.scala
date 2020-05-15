@@ -18,27 +18,27 @@ import org.apache.logging.log4j.LogManager
 class HighAvailabilityServer(
   var curator: CuratorFramework,
   contender: HighAvailability,
-  var path: String)
+  var endpointId: String)
   extends LeaderLatchListener with NodeCacheListener with UnhandledErrorListener {
 
   this.curator =  Objects.requireNonNull(curator)
-  path = Objects.requireNonNull(path)
+  endpointId = Objects.requireNonNull(endpointId)
 
   var issuedLeaderSessionID: UUID = null
   var confirmedLeaderSessionID: UUID = null
 
   curator.getUnhandledErrorListenable.addListener(this)
-  var leaderLatch = new LeaderLatch(curator, "/latch/" + path)
+  var leaderLatch = new LeaderLatch(curator, "/latch/" + endpointId)
   leaderLatch.addListener(this)
   leaderLatch.start()
 
-  var cache = new NodeCache(curator, "/leader/" + path)
+  var cache = new NodeCache(curator, "/leader/" + endpointId)
   cache.getListenable.addListener(this)
   cache.start()
 
   val LOG = LogManager.getLogger(classOf[HighAvailabilityServer])
 
-  LOG.info("Starting HighAvailabilityServer {}.", this.path)
+  LOG.info("Starting HighAvailabilityServer {}.", this.endpointId)
 
   override def isLeader: Unit = {
     this.synchronized {
@@ -93,9 +93,9 @@ class HighAvailabilityServer(
   : Unit = {
 
     if (leaderLatch.hasLeadership) {
-      Curator.deleteIfOtherSession(curator, "/leader/" + path)
+      Curator.deleteIfOtherSession(curator, "/leader/" + endpointId)
       val data = contender.getAddress + "," + leaderSessionID
-      Curator.upsertIfNotEquals(curator, "/leader/" + path, data.getBytes)
+      Curator.upsertIfNotEquals(curator, "/leader/" + endpointId, data.getBytes)
     }
   }
 

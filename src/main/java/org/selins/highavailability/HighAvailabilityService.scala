@@ -23,16 +23,16 @@ class HighAvailabilityService(var configuration: Configuration) {
    * Start the specified high availability server
    *
    * @param endpoint
-   * @param path
+   * @param endpointId
    * @tparam C
    * @return Returns the created server
    */
   def startServer[C <: HighAvailability](
     endpoint: C,
-    path: String)
+    endpointId: String)
   : HighAvailabilityServer = {
-    requireNonNull(path)
-    new HighAvailabilityServer(curator, endpoint, path)
+    requireNonNull(endpointId)
+    new HighAvailabilityServer(curator, endpoint, endpointId)
   }
 
   /**
@@ -53,26 +53,26 @@ class HighAvailabilityService(var configuration: Configuration) {
    * Start the specified high availability server
    *
    * @param listener
-   * @param path
+   * @param endpointId
    * @tparam C
    * @return Returns the created server
    */
   def startSelector[C <: LeaderSelector](
     listener: LeaderSelector,
-    path: String)
+    endpointId: String)
   : SelectorServer = {
-    requireNonNull(path)
-    new SelectorServer(curator, listener, path)
+    requireNonNull(endpointId)
+    new SelectorServer(curator, listener, endpointId)
   }
 
   /**
    * 校验路径是否为空
-   * @param path
+   * @param endpointId
    * @return
    */
   def requireNonNull(
-    path: String)
+    endpointId: String)
   : String ={
-    Objects.requireNonNull(path,"the high available zk path is null.")
+    Objects.requireNonNull(endpointId,"the high available endpointId is null.")
   }
 }

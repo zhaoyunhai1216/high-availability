@@ -1,6 +1,7 @@
 package org.selins.highavailability;
 
 import org.selins.configuration.Configuration;
+import scala.reflect.runtime.HasJavaClass;
 
 import java.util.UUID;
 

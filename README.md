@@ -22,7 +22,7 @@
     </dependency>
 
     #如果以上引用不好用,可以自行下载编译
-##调用方法
+##实现方法
 
     //接口实现
     public class HighAvailabilityTest implements HighAvailability {
@@ -61,3 +61,23 @@
     configuration.setValue(ConfigOptions.HA_ZOOKEEPER_QUORUM,"127.0.0.1:2181/selins");
     HighAvailabilityService service = new HighAvailabilityService(configuration);
     HighAvailabilityTest entry = new HighAvailabilityTest(service,"test"); 
+##查询leader方法
+
+    //查询监听
+    public class HighAvailabilityListener implements LeaderSelector {
+        @Override
+        public void notifyLeaderAddress(
+                String leaderAddress, //leader连接地址
+                String leaderSessionID, // leader session ID
+                Throwable throwable) {
+            //todo
+            System.out.println(leaderAddress);
+        }
+    }
+    
+    //调用样例
+    Configuration configuration = new Configuration();
+    configuration.setValue(ConfigOptions.HA_ZOOKEEPER_QUORUM,"127.0.0.1:2181/selins");
+    HighAvailabilityService service = new HighAvailabilityService(configuration);
+    SelectorServer selectorServer = service.startSelector(new HighAvailabilityListener(),"test");
+    System.out.println(selectorServer.lastLeaderAddress());
