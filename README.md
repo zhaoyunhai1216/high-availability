@@ -1,4 +1,5 @@
 # high-availability
+
 这是一个通用的实现高可用的工具, 可以通过此工具非常简便的实现高可用, 来源于flink源码, 并进行简化处理。
 
 # 使用方法
@@ -56,4 +57,4 @@
     Configuration configuration = new Configuration();
     configuration.setValue(ConfigOptions.HA_ZOOKEEPER_QUORUM,"127.0.0.1:2181/selins");
     HighAvailabilityService service = new HighAvailabilityService(configuration);
-    HighAvailabilityTest entry = new HighAvailabilityTest(service,"test");
+    HighAvailabilityTest entry = new HighAvailabilityTest(service,"test"); 
