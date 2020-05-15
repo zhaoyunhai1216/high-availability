@@ -1,9 +1,11 @@
 # high-availability
 
-这是一个通用的实现高可用的工具, 可以通过此工具非常简便的实现高可用, 来源于flink源码, 并进行简化处理。
+这是一个通用的实现高可用的工具, 可以通过此工具非常简便的实现高可用, 只要实现一个接口接可以, 此工具主要源于flink高可用模块，参考并稍做改动而成。
+其中主要技术为利用zookeeper/Curator 进行实现高可用.
 
 # 使用方法
 ##引用依赖
+
     <repository>
         <id>mvn-repo</id>
         <url>https://github.com/zhaoyunhai1216/mvn-repo/master</url>
@@ -21,6 +23,7 @@
 
     #如果以上引用不好用,可以自行下载编译
 ##调用方法
+
     //接口实现
     public class HighAvailabilityTest implements HighAvailability {
         HighAvailabilityServer server;
