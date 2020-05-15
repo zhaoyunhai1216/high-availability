@@ -46,6 +46,7 @@ public class HighAvailabilityTest implements HighAvailability {
         Configuration configuration = new Configuration();
         configuration.setValue(ConfigOptions.HA_ZOOKEEPER_QUORUM,"127.0.0.1:2181/selins");
         HighAvailabilityService service = new HighAvailabilityService(configuration);
+
         HighAvailabilityTest entry = new HighAvailabilityTest(service,"test");
         Thread.sleep(Integer.MAX_VALUE);
     }

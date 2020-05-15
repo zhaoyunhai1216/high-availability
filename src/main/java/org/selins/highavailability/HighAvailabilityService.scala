@@ -11,13 +11,13 @@ import org.selins.configuration.Configuration
  * @author zhaoyunhai
  * @date 2020/2/7 21:34
  */
-class HighAvailabilityService(var configuration: Configuration) {
+class HighAvailabilityService(private var configuration: Configuration) {
   this.configuration = Objects.requireNonNull(configuration,"the high availability configuration is null.")
   /**
    * Starts a {@link CuratorFramework} instance and connects it to the given ZooKeeper
    * quorum.
    */
-  var curator = Curator.startCuratorFramework(configuration)
+  private val curator = Curator.startCuratorFramework(configuration)
 
   /**
    * Start the specified high availability server
@@ -70,7 +70,7 @@ class HighAvailabilityService(var configuration: Configuration) {
    * @param endpointId
    * @return
    */
-  def requireNonNull(
+  private def requireNonNull(
     endpointId: String)
   : String ={
     Objects.requireNonNull(endpointId,"the high available endpointId is null.")

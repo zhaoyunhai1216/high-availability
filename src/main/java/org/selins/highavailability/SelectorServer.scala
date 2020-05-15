@@ -7,7 +7,6 @@ import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.api.UnhandledErrorListener
 import org.apache.curator.framework.recipes.cache.{NodeCache, NodeCacheListener}
 import org.apache.logging.log4j.LogManager
-import org.slf4j.LoggerFactory
 
 /**
  * @title: HighAvailabilityQuerier
@@ -17,24 +16,24 @@ import org.slf4j.LoggerFactory
  * @date 2020/2/7 21:36
  */
 class SelectorServer(
-  var curator: CuratorFramework,
-  listener: LeaderSelector,
-  var endpointId: String) extends NodeCacheListener with UnhandledErrorListener {
+  private var curator: CuratorFramework,
+  private val listener: LeaderSelector,
+  private var endpointId: String) extends NodeCacheListener with UnhandledErrorListener {
 
   this.curator =  Objects.requireNonNull(curator)
   this.endpointId =  Objects.requireNonNull(endpointId)
-  var cache = new NodeCache(curator, "/leader/" + endpointId)
+  private val cache = new NodeCache(curator, "/leader/" + endpointId)
   cache.start()
   cache.rebuild()
-  var lastLeaderAddress: String = null
-  var lastLeaderSessionID: String = null
+  var leaderAddress: String = null
+  var leaderSessionID: String = null
 
   notifyLeaderAddress()
 
-  val LOG = LogManager.getLogger(classOf[SelectorServer])
+  private val LOG = LogManager.getLogger(classOf[SelectorServer])
   LOG.info("Starting QuerierServer {}.", endpointId)
 
-  override def nodeChanged(): Unit = {
+  protected override def nodeChanged(): Unit = {
     this.synchronized {
       try notifyLeaderAddress()
       catch {
@@ -45,22 +44,22 @@ class SelectorServer(
     }
   }
 
-  def notifyLeaderAddress(): Unit = {
+  private def notifyLeaderAddress(): Unit = {
     val childData = cache.getCurrentData
     if (childData != null) {
       val info = new String(childData.getData).split(",");
-      lastLeaderAddress = info(0)
-      lastLeaderSessionID = info(1)
+      leaderAddress = info(0)
+      leaderSessionID = info(1)
     }else{
-      lastLeaderAddress = null
-      lastLeaderSessionID = null
+      leaderAddress = null
+      leaderSessionID = null
     }
     notifyLeaderAddress(null)
   }
 
-  def notifyLeaderAddress(throwable: Throwable): Unit = {
+  private  def notifyLeaderAddress(throwable: Throwable): Unit = {
     if (listener != null)
-      listener.notifyLeaderAddress(lastLeaderAddress, lastLeaderSessionID, null)
+      listener.notifyLeaderAddress(leaderAddress, leaderSessionID, null)
   }
 
 
@@ -76,7 +75,7 @@ class SelectorServer(
     }
   }
 
-  override def unhandledError(s: String, throwable: Throwable): Unit = {
+  protected override def unhandledError(s: String, throwable: Throwable): Unit = {
     notifyLeaderAddress(throwable)
   }
 }

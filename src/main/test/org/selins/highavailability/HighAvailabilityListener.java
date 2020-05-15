@@ -24,6 +24,6 @@ public class HighAvailabilityListener implements LeaderSelector {
         configuration.setValue(ConfigOptions.HA_ZOOKEEPER_QUORUM,"127.0.0.1:2181/selins");
         HighAvailabilityService service = new HighAvailabilityService(configuration);
         SelectorServer selectorServer = service.startSelector(new HighAvailabilityListener(),"test");
-        System.out.println(selectorServer.lastLeaderAddress());
+        System.out.println(selectorServer.leaderAddress());
     }
 }
