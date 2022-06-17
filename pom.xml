@@ -17,7 +17,7 @@
     <curator.version>4.2.0</curator.version>
     <zookeeper.version>3.4.10</zookeeper.version>
     <log4j2.version>2.13.2</log4j2.version>
-    <fastjson.version>1.2.47</fastjson.version>
+    <fastjson.version>1.2.83</fastjson.version>
     <config.version>0.1.0</config.version>
     <github.global.server>github</github.global.server>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
